@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+  <rect width="160" height="50" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(14, 12)">
+    <text x="0" y="22" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="24" letter-spacing="-1" fill="#4D148C">Fed<tspan fill="#FF6600">Ex</tspan></text>
+    <text x="80" y="20" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="9" letter-spacing="1" fill="#666666">Express</text>
+  </g>
+</svg>

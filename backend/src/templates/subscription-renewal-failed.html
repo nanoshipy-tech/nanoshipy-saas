@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Subscription Renewal Action Required</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333333;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9fafb;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      color: #dc2626;
+      font-size: 24px;
+      margin: 0;
+    }
+    .content {
+      font-size: 14px;
+    }
+    .warning-box {
+      border-left: 4px solid #dc2626;
+      background-color: #fef2f2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .details {
+      background-color: #f3f4f6;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .details-row:last-child {
+      margin-bottom: 0;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 8px;
+      font-weight: bold;
+    }
+    .btn-link {
+      display: inline-block;
+      background-color: #2563eb;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Subscription Renewal Failed</h1>
+    </div>
+    <div class="content">
+      <p>Hello {{ name }},</p>
+      <p>Your subscription auto-renewal attempt failed due to insufficient balance in your virtual prepaid wallet account.</p>
+      
+      <div class="warning-box">
+        <strong>Important:</strong> Your account is currently in a <strong>{{ gracePeriodDays }} days grace period</strong>. 
+        Please recharge your wallet balance immediately to prevent workspace suspension and dispatch blockages.
+      </div>
+
+      <div class="details">
+        <div class="details-row">
+          <span>Target Plan:</span>
+          <span>{{ planName }}</span>
+        </div>
+        <div class="details-row">
+          <span>Required Amount:</span>
+          <span>₹{{ price }}</span>
+        </div>
+        <div class="details-row">
+          <span>Grace Period Ends:</span>
+          <span>{{ gracePeriodEnds }}</span>
+        </div>
+      </div>
+      
+      <p>Please recharge your wallet balance by clicking the checkout link below:</p>
+      
+      <div style="text-align: center;">
+        <a href="http://localhost:3000/wallet/recharge" class="btn-link" target="_blank">Recharge Wallet Now</a>
+      </div>
+      
+    </div>
+    <div class="footer">
+      <p>This is an automated operational notification. Please do not reply to this email.</p>
+    </div>
+  </div>
+</body>
+</html>

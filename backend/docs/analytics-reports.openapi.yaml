@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: Shipping SaaS - Reports & Analytics API Spec
+  version: 1.0.0
+  description: API specifications for Module 16 - Consolidated Reporting, Analytics, and Statement Exports.
+paths:
+  /analytics/overview:
+    get:
+      summary: Get Tenant Overview Stats
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: date_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-01-01"
+        - name: date_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-01-30"
+      responses:
+        '200':
+          description: Successful stats aggregation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      orders_count:
+                        type: integer
+                      shipments_count:
+                        type: integer
+                      delivered_count:
+                        type: integer
+                      ndr_count:
+                        type: integer
+                      rto_count:
+                        type: integer
+                      delivery_success_rate:
+                        type: number
+                      cod_amount:
+                        type: number
+                      prepaid_amount:
+                        type: number
+                      shipping_spend:
+                        type: number
+  /analytics/orders-trend:
+    get:
+      summary: Get Orders vs Shipments Trend Time-Series
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: date_from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: granularity
+          in: query
+          schema:
+            type: string
+            enum: [daily, weekly, monthly]
+            default: daily
+      responses:
+        '200':
+          description: Time series array
+  /analytics/courier-performance:
+    get:
+      summary: Get Courier Performance Comparison
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: date_from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: date_to
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Courier list breakdown
+  /reports/export:
+    post:
+      summary: Queue Background Report Statement Generation
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - report_type
+                - format
+                - date_from
+                - date_to
+              properties:
+                report_type:
+                  type: string
+                  enum: [orders_summary, shipments_summary, ndr_rto_summary, wallet_statement, courier_performance]
+                format:
+                  type: string
+                  enum: [csv, pdf]
+                date_from:
+                  type: string
+                  format: date
+                date_to:
+                  type: string
+                  format: date
+      responses:
+        '202':
+          description: Export job accepted and processing in queue
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      export_id:
+                        type: string
+                        format: uuid
+                      status:
+                        type: string
+                        example: "processing"
+  /reports/download:
+    get:
+      summary: Securely Download Generated Report File
+      description: Validates HMAC-SHA256 signature and serves the file if it has not expired.
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: expires
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: tenant_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: signature
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Serves the file buffer (CSV or PDF)
+        '403':
+          description: Link signature is invalid or expired
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

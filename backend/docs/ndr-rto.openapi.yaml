@@ -1,0 +1,319 @@
+openapi: 3.0.3
+info:
+  title: ShippingSaaS NDR & Returns (RTO) API
+  version: 1.0.0
+  description: API endpoints for Non-Delivery Report (NDR) events and Return-To-Origin (RTO) tracking management.
+paths:
+  /ndr:
+    get:
+      summary: List NDR events
+      description: Returns a paginated list of NDR events for the current tenant.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [open, action_taken, resolved_delivered, resolved_rto]
+        - name: reason_code
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [CUSTOMER_UNAVAILABLE, ADDRESS_INCORRECT, CUSTOMER_REFUSED, COD_NOT_READY, OTHER]
+        - name: date_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: date_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  rows: []
+                  pagination:
+                    total: 0
+                    page: 1
+                    limit: 20
+                    totalPages: 0
+                error: null
+
+  /ndr/summary:
+    get:
+      summary: Get NDR summary stats
+      description: Returns aging and reason code aggregations for the tenant dashboard.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  total_open: 14
+                  by_reason:
+                    CUSTOMER_UNAVAILABLE: 6
+                    ADDRESS_INCORRECT: 3
+                    CUSTOMER_REFUSED: 2
+                    COD_NOT_READY: 2
+                    OTHER: 1
+                  aging_over_sla: 4
+                error: null
+
+  /ndr/bulk-action:
+    post:
+      summary: Bulk NDR action
+      description: Performs the same manual workflow action across multiple selected open/action_taken NDR events.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ndr_ids
+                - action_type
+              properties:
+                ndr_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  maxItems: 100
+                action_type:
+                  type: string
+                  enum: [reattempt, update_address, update_phone, mark_rto, call_customer, no_action]
+                notes:
+                  type: string
+                updated_address_line1:
+                  type: string
+                updated_phone:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  processed: 2
+                  failed: 0
+                  details:
+                    - id: "uuid-1"
+                      success: true
+                    - id: "uuid-2"
+                      success: true
+                error: null
+
+  /ndr/{id}:
+    get:
+      summary: Get NDR details
+      description: Returns full details of a specific NDR event, including shipment info and chronological action history.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: "uuid"
+                  reason_code: "CUSTOMER_UNAVAILABLE"
+                  attempt_number: 2
+                  status: "open"
+                  sla_due_at: "2026-07-13T00:00:00Z"
+                  shipment: {}
+                  actions: []
+                error: null
+
+  /ndr/{id}/action:
+    post:
+      summary: Perform an NDR action
+      description: Records and triggers a specific operational action on an open NDR event.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action_type
+              properties:
+                action_type:
+                  type: string
+                  enum: [reattempt, update_address, update_phone, mark_rto, call_customer, no_action]
+                notes:
+                  type: string
+                updated_address_line1:
+                  type: string
+                updated_phone:
+                  type: string
+      responses:
+        '200':
+          description: Action recorded successfully
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  ndr_id: "uuid"
+                  status: "action_taken"
+                  action_type: "reattempt"
+                error: null
+        '409':
+          description: NDR is already resolved and cannot accept further actions.
+
+  /rto:
+    get:
+      summary: List RTO records
+      description: Returns a paginated list of RTO records for the current tenant.
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [rto_initiated, rto_in_transit, rto_delivered, rto_lost]
+        - name: date_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: date_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  rows: []
+                  pagination:
+                    total: 0
+                    page: 1
+                    limit: 20
+                    totalPages: 0
+                error: null
+
+  /rto/{id}:
+    get:
+      summary: Get RTO details
+      description: Returns details of a specific Return-To-Origin record.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: "uuid"
+                  initiated_reason: "Surpassed maximum attempts"
+                  initiated_by: "auto_ndr_threshold"
+                  status: "rto_initiated"
+                  shipment: {}
+                error: null
+
+  /rto/{id}/status:
+    put:
+      summary: Update RTO status manually
+      description: Allows manual status modifications, such as marking the shipment as successfully received back at the origin warehouse.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [rto_initiated, rto_in_transit, rto_delivered, rto_lost]
+                notes:
+                  type: string
+                rto_awb_number:
+                  type: string
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: "uuid"
+                  status: "rto_delivered"
+                  received_at_warehouse_at: "2026-07-11T02:00:00Z"
+                error: null

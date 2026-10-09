@@ -1,0 +1,35 @@
+# ==============================================================================
+# Backend .gitignore
+# ==============================================================================
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local SQLite & Redis
+database.sqlite
+*.sqlite
+*.sqlite3
+dump.rdb
+
+# Logs & Debugging
+logs/
+*.log
+npm-debug.log*
+
+# Uploads & Storage
+uploads/
+storage/
+backups/
+scratch/
+coverage/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

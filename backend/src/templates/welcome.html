@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; line-height: 1.5; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .btn { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to ShippingSaaS, {{ name }}!</h2>
+    <p>Your email has been successfully verified, and your account for {{ companyName }} is now fully active.</p>
+    <p>You can now log in and start managing your shipping operations.</p>
+    <p>
+      <a href="{{ loginLink }}" class="btn">Go to Login</a>
+    </p>
+    <p>Thanks,<br>The ShippingSaaS Team</p>
+  </div>
+</body>
+</html>

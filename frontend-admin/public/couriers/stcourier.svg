@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <rect width="160" height="48" rx="8" fill="#004A99"/>
+  <!-- ST Courier Icon -->
+  <g transform="translate(8, 7)">
+    <rect width="34" height="34" rx="7" fill="#FFFFFF"/>
+    <text x="6" y="24" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="18" fill="#D6001C">ST</text>
+    <polygon points="27,10 29,14 33,14 30,17 31,21 27,19 23,21 24,17 21,14 25,14" fill="#FFCC00"/>
+  </g>
+  <text x="50" y="30" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="16" letter-spacing="0.5" fill="#FFFFFF">ST COURIER</text>
+</svg>

@@ -1,0 +1,374 @@
+openapi: 3.0.3
+info:
+  title: Module 18 — Settings & Activity Logs API
+  version: "1.0.0"
+  description: |
+    Settings and Activity Log endpoints for the SaaS Shipping Platform.
+    
+    **Settings Resolution**: Three-tier (tenant override → platform DB → env fallback).
+    **Activity Log**: Searchable views over audit_logs and platform_audit_logs tables.
+
+servers:
+  - url: /api/v1
+
+tags:
+  - name: Tenant Settings
+    description: Tenant-level configuration overrides
+  - name: Platform Settings
+    description: Platform-wide configuration (admin only)
+  - name: Activity Log
+    description: Tenant audit log search and export
+  - name: Platform Activity Log
+    description: Platform-wide audit log (admin only)
+
+paths:
+  /settings:
+    get:
+      tags: [Tenant Settings]
+      summary: Get tenant effective settings
+      description: Returns all settings with resolved effective values, showing override source metadata.
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Effective settings resolved from three-tier chain
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantSettingsResponse"
+              example:
+                success: true
+                data:
+                  invoice_prefix:
+                    value: "INV"
+                    is_override: false
+                    source: platform_default
+                  ndr_auto_rto_threshold:
+                    value: 3
+                    is_override: false
+                    source: platform_default
+                  low_balance_threshold:
+                    value: 750.00
+                    is_override: true
+                    source: tenant_override
+                  default_pickup_address_id:
+                    value: null
+                    is_override: false
+                    source: env_fallback
+                error: null
+
+    put:
+      tags: [Tenant Settings]
+      summary: Update tenant settings
+      description: |
+        Update one or more tenant setting overrides.
+        Send `null` for a key to clear the override and revert to the platform default.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTenantSettingsRequest"
+            example:
+              invoice_prefix: "ACME"
+              low_balance_threshold: 750.00
+      responses:
+        "200":
+          description: Settings updated, returns new effective values
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /platform/settings:
+    get:
+      tags: [Platform Settings]
+      summary: Get all platform settings
+      description: Returns all platform_settings rows including key, value, type, and last updated metadata.
+      security:
+        - PlatformBearerAuth: []
+      responses:
+        "200":
+          description: Array of platform settings rows
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  - id: "uuid"
+                    setting_key: default_gst_rate_percent
+                    setting_value: "18"
+                    value_type: number
+                    description: "Default GST rate applied to invoices"
+                    updated_by: null
+                    updated_at: "2026-01-18T00:00:00Z"
+                error: null
+
+  /platform/settings/{key}:
+    put:
+      tags: [Platform Settings]
+      summary: Update a platform setting
+      description: Update the value of one platform setting by key. Validates against the declared value_type.
+      security:
+        - PlatformBearerAuth: []
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+          example: default_gst_rate_percent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [setting_value]
+              properties:
+                setting_value:
+                  type: string
+            example:
+              setting_value: "18"
+      responses:
+        "200":
+          description: Setting updated
+        "404":
+          description: Setting key not found
+        "422":
+          description: Value does not match declared value_type
+
+  /activity-log:
+    get:
+      tags: [Activity Log]
+      summary: Search tenant activity log
+      description: Returns paginated, searchable audit log entries for the authenticated tenant.
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: action
+          schema:
+            type: string
+          description: Partial match on action name (e.g. "shipment")
+        - in: query
+          name: entity_type
+          schema:
+            type: string
+        - in: query
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+      responses:
+        "200":
+          description: Paginated activity log
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  items:
+                    - action: shipment_created
+                      entity_type: shipment
+                      entity_id: "uuid"
+                      user_id: "uuid"
+                      ip_address: "203.0.113.1"
+                      metadata: {}
+                      created_at: "2026-07-09T10:00:00Z"
+                  pagination:
+                    page: 1
+                    limit: 50
+                    total: 890
+                    total_pages: 18
+                error: null
+
+  /activity-log/export:
+    post:
+      tags: [Activity Log]
+      summary: Export tenant activity log to CSV
+      description: |
+        Generates a CSV file of the tenant's audit log. Capped at 50,000 rows.
+        Use narrower date ranges for very active tenants.
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            example:
+              action: "shipment"
+              date_from: "2026-01-01T00:00:00Z"
+              date_to: "2026-07-01T00:00:00Z"
+      responses:
+        "200":
+          description: CSV file download
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: "attachment; filename=activity-log-tenantid-timestamp.csv"
+            X-Export-Row-Count:
+              schema:
+                type: string
+
+  /platform/activity-log:
+    get:
+      tags: [Platform Activity Log]
+      summary: Search platform-wide activity log
+      security:
+        - PlatformBearerAuth: []
+      parameters:
+        - in: query
+          name: action
+          schema:
+            type: string
+        - in: query
+          name: target_tenant_id
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: entity_type
+          schema:
+            type: string
+        - in: query
+          name: admin_id
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Paginated platform audit log
+
+  /platform/activity-log/tenant/{tenantId}:
+    get:
+      tags: [Platform Activity Log]
+      summary: Drill into a specific tenant's audit log
+      description: |
+        Read-only view of a specific tenant's audit_logs table. 
+        **This action itself is logged** to platform_audit_logs as `viewed_tenant_activity_log`.
+      security:
+        - PlatformBearerAuth: []
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Tenant activity log (paginated)
+
+  /platform/activity-log/export:
+    post:
+      tags: [Platform Activity Log]
+      summary: Export platform activity log to CSV
+      security:
+        - PlatformBearerAuth: []
+      responses:
+        "200":
+          description: CSV file download
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    PlatformBearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    TenantSettingsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              value:
+                nullable: true
+              is_override:
+                type: boolean
+              source:
+                type: string
+                enum: [tenant_override, platform_default, env_fallback]
+
+    UpdateTenantSettingsRequest:
+      type: object
+      properties:
+        invoice_prefix:
+          type: string
+          pattern: "^[A-Z0-9]{2,20}$"
+          nullable: true
+        ndr_auto_rto_threshold:
+          type: integer
+          minimum: 1
+          maximum: 10
+          nullable: true
+        default_pickup_address_id:
+          type: string
+          format: uuid
+          nullable: true
+        low_balance_threshold:
+          type: number
+          minimum: 0
+          nullable: true
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          example:
+            success: false
+            error:
+              code: VALIDATION_ERROR
+              message: Invalid input
+              fields:
+                invoice_prefix: "Invoice prefix must be alphanumeric only"

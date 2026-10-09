@@ -1,0 +1,317 @@
+openapi: 3.0.3
+info:
+  title: Support Tickets API Specification
+  description: |
+    Endpoints for raising, threading, assignment, and status controls for tenant support tickets 
+    and platform administration.
+  version: 1.0.0
+paths:
+  /api/v1/support/tickets:
+    get:
+      summary: List Tenant Tickets
+      description: Retrieve paginated support tickets raised by the current tenant workspace.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, in_progress, waiting_on_tenant, resolved, closed]
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [billing, technical, shipment_issue, account, other]
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [low, medium, high, urgent]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Support tickets queue loaded successfully
+    post:
+      summary: Raise Support Ticket
+      description: Create a support ticket and its initial message. Enforces row-level sequential number allocation and cross-tenant reference verification.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - subject
+                - category
+                - message
+              properties:
+                subject:
+                  type: string
+                  minLength: 5
+                category:
+                  type: string
+                  enum: [billing, technical, shipment_issue, account, other]
+                priority:
+                  type: string
+                  enum: [low, medium, high, urgent]
+                  default: medium
+                message:
+                  type: string
+                  minLength: 10
+                related_order_id:
+                  type: string
+                  format: uuid
+                related_shipment_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Support Ticket raised successfully
+        '422':
+          description: Cross-tenant reference violation rejected
+
+  /api/v1/support/tickets/{id}:
+    get:
+      summary: Get Ticket Details (Tenant)
+      description: Retrieve ticket detail, message thread, and attachments. Crucial control filters out is_internal_note=true messages.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Ticket details successfully loaded
+
+  /api/v1/support/tickets/{id}/reply:
+    post:
+      summary: Reply to Ticket (Tenant)
+      description: Add message reply. Closed tickets are rejected. Reopens resolved tickets. Enforces attachments limit.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  minLength: 10
+                attachments:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                      file_size_bytes:
+                        type: integer
+      responses:
+        '201':
+          description: Reply message successfully posted
+
+  /api/v1/support/tickets/{id}/close:
+    put:
+      summary: Close Resolved Ticket (Tenant)
+      description: Mark status to closed. Tenant is restricted to only closing tickets that are currently resolved.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Support ticket closed successfully
+        '409':
+          description: Cannot close ticket since status is not resolved
+
+  /api/v1/platform/tickets:
+    get:
+      summary: Global Admin Queue
+      description: Retrieve support tickets across all tenants with page sorting and filters.
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: tenant_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: priority
+          in: query
+          schema:
+            type: string
+        - name: assigned_to
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: sla_breached
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Global ticket queue loaded successfully
+
+  /api/v1/platform/tickets/summary:
+    get:
+      summary: Get SLA Queue Summary
+      description: Retrieves dashboard analytics including open tickets, SLA breaches count, and avg platform response.
+      security:
+        - AdminAuth: []
+      responses:
+        '200':
+          description: Analytics returned successfully
+
+  /api/v1/platform/tickets/{id}/reply:
+    post:
+      summary: support Agent Reply (Admin)
+      description: Post official response message, sets support first-response-at timestamp, and sends notifications.
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  minLength: 10
+      responses:
+        '201':
+          description: Response message posted
+
+  /api/v1/platform/tickets/{id}/internal-note:
+    post:
+      summary: Support Internal Note (Admin)
+      description: Adds private message log that is strictly filtered out from tenant-scoped queries.
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  minLength: 10
+      responses:
+        '201':
+          description: Internal note posted
+
+  /api/v1/platform/tickets/{id}/assign:
+    put:
+      summary: Delegate Ticket (Admin)
+      description: Updates assigned agent for ticket.
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - assigned_to
+              properties:
+                assigned_to:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Assigned agent updated
+
+  /api/v1/platform/tickets/{id}/status:
+    put:
+      summary: Parameters Override (Admin)
+      description: Admin status and priority updates override.
+      security:
+        - AdminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                priority:
+                  type: string
+      responses:
+        '200':
+          description: Parameters updated

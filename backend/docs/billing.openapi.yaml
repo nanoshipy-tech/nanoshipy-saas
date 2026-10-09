@@ -1,0 +1,289 @@
+openapi: 3.0.3
+info:
+  title: Billing, Invoices & Transactions API Specification
+  description: |
+    Endpoints for per-shipment invoice generation, monthly rollup statements, CGST/SGST/IGST tax splits, 
+    credit notes for order cancellations, secure PDF downloads, and platform revenue logging.
+  version: 1.0.0
+paths:
+  /api/v1/invoices:
+    get:
+      summary: List Tenant Invoices
+      description: Retrieve a paginated log of all invoices for the authenticated tenant.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: invoice_type
+          in: query
+          schema:
+            type: string
+            enum: [shipment, monthly_statement, manual]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [generated, paid, void]
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Invoices log retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      rows:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Invoice'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+
+  /api/v1/invoices/{id}:
+    get:
+      summary: Get Invoice Details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Invoice record fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/InvoiceDetail'
+
+  /api/v1/invoices/{id}/pdf:
+    get:
+      summary: Download Invoice PDF Document
+      description: Secures download access by streaming PDF buffer or redirecting to signed storage paths.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: PDF content stream
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /api/v1/invoices/bulk-export:
+    post:
+      summary: Merge Invoice PDFs
+      description: Merges multiple invoice PDFs into a single printable rollup document.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoice_ids
+              properties:
+                invoice_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  example: ["a8b9c0d1-e2f3-4a5b-6c7d-8e9f0a1b2c3d", "b9c0d1e2-f3a4-5b6c-7d8e-9f0a1b2c3d4e"]
+      responses:
+        '200':
+          description: PDF merged file url ready
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      merged_pdf_url:
+                        type: string
+                        example: "https://api.yourdomain.com/uploads/billing/exports/invoices-bulk-12345.pdf"
+                      count:
+                        type: integer
+                        example: 2
+
+  /api/v1/billing/statements:
+    get:
+      summary: List Consolidated Monthly Statements
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Statements list retrieved
+
+  /api/v1/credit-notes:
+    get:
+      summary: List Credit Notes
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Credit notes list retrieved
+
+  /api/v1/credit-notes/{id}:
+    get:
+      summary: Get Credit Note details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Credit note fetched
+
+  /api/v1/platform/invoices:
+    get:
+      summary: Superadmin platform-wide invoice feed
+      security:
+        - AdminBearerAuth: []
+      parameters:
+        - name: tenant_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Global invoices log fetched
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    AdminBearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        invoice_number:
+          type: string
+          example: INV/2026-27/000123
+        invoice_type:
+          type: string
+          example: shipment
+        subtotal:
+          type: number
+          example: 89.50
+        cgst_amount:
+          type: number
+          example: 8.06
+        sgst_amount:
+          type: number
+          example: 8.06
+        igst_amount:
+          type: number
+          example: 0.00
+        total_amount:
+          type: number
+          example: 105.62
+        status:
+          type: string
+          example: paid
+        pdf_url:
+          type: string
+          example: "/uploads/billing/invoices/invoice-INV-2026-27-000123.pdf"
+        place_of_supply:
+          type: string
+          example: Tamil Nadu
+    InvoiceDetail:
+      allOf:
+        - $ref: '#/components/schemas/Invoice'
+        - type: object
+          properties:
+            lineItems:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  description:
+                    type: string
+                    example: "Shipping charges - AWB SHIP123456"
+                  hsn_sac_code:
+                    type: string
+                    example: "996812"
+                  quantity:
+                    type: integer
+                    example: 1
+                  unit_price:
+                    type: number
+                    example: 89.50
+                  amount:
+                    type: number
+                    example: 89.50
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer

@@ -1,0 +1,571 @@
+{
+  "targetUser": null,
+  "targetAdmin": null,
+  "summary": {
+    "totalDbRows": 1085,
+    "totalKeptRows": 0,
+    "totalDeletedRows": 1085
+  },
+  "rows": [
+    {
+      "group": "4. Warehouse, Pincodes & KYC Documents",
+      "table": "address_lookup_audit_logs",
+      "total": 38,
+      "kept": 0,
+      "deleted": 38
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "analytics_daily_snapshots",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "api_key_usage_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "api_keys",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "9. Other Uncategorised Tables",
+      "table": "audit_logs",
+      "total": 194,
+      "kept": 0,
+      "deleted": 194
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "carrier_margin_configs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "cod_markup_config",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "cod_remittances",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "4. Warehouse, Pincodes & KYC Documents",
+      "table": "company_documents",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "cost_rate_snapshots",
+      "total": 11,
+      "kept": 0,
+      "deleted": 11
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "courier_cost_rates",
+      "total": 9,
+      "kept": 0,
+      "deleted": 9
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "courier_providers",
+      "total": 3,
+      "kept": 0,
+      "deleted": 3
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "credit_notes",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "impersonation_sessions",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "in_app_notifications",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "invoice_line_items",
+      "total": 4,
+      "kept": 0,
+      "deleted": 4
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "invoice_sequences",
+      "total": 2,
+      "kept": 0,
+      "deleted": 2
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "invoices",
+      "total": 5,
+      "kept": 0,
+      "deleted": 5
+    },
+    {
+      "group": "4. Warehouse, Pincodes & KYC Documents",
+      "table": "kyc_documents",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "markup_config",
+      "total": 2,
+      "kept": 0,
+      "deleted": 2
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "ndr_actions",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "ndr_events",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "notification_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "notification_preferences",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "notification_templates",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "order_imports",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "order_items",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "order_status_histories",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "orders",
+      "total": 24,
+      "kept": 0,
+      "deleted": 24
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "password_reset_tokens",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "payment_gateways",
+      "total": 5,
+      "kept": 0,
+      "deleted": 5
+    },
+    {
+      "group": "1. Tenant & User Management",
+      "table": "permissions",
+      "total": 48,
+      "kept": 0,
+      "deleted": 48
+    },
+    {
+      "group": "4. Warehouse, Pincodes & KYC Documents",
+      "table": "pickup_addresses",
+      "total": 24,
+      "kept": 0,
+      "deleted": 24
+    },
+    {
+      "group": "4. Warehouse, Pincodes & KYC Documents",
+      "table": "pincode_master",
+      "total": 16,
+      "kept": 0,
+      "deleted": 16
+    },
+    {
+      "group": "9. Other Uncategorised Tables",
+      "table": "plan_change_history",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "9. Other Uncategorised Tables",
+      "table": "plan_usage_tracking",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_admins",
+      "total": 2,
+      "kept": 0,
+      "deleted": 2
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_audit_logs",
+      "total": 27,
+      "kept": 0,
+      "deleted": 27
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_integrations",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_permissions",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_refresh_tokens",
+      "total": 113,
+      "kept": 0,
+      "deleted": 113
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_role_permissions",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "6. Platform Admin & System Operations",
+      "table": "platform_settings",
+      "total": 2,
+      "kept": 0,
+      "deleted": 2
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "provider_health_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "rate_card_upload_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "rate_cards",
+      "total": 9,
+      "kept": 0,
+      "deleted": 9
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "recharge_orders",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "refresh_tokens",
+      "total": 268,
+      "kept": 0,
+      "deleted": 268
+    },
+    {
+      "group": "9. Other Uncategorised Tables",
+      "table": "role_permissions",
+      "total": 96,
+      "kept": 0,
+      "deleted": 96
+    },
+    {
+      "group": "1. Tenant & User Management",
+      "table": "roles",
+      "total": 8,
+      "kept": 0,
+      "deleted": 8
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "rto_markup_config",
+      "total": 1,
+      "kept": 0,
+      "deleted": 1
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "rto_records",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "settings_change_history",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "shipment_rate_quotes",
+      "total": 34,
+      "kept": 0,
+      "deleted": 34
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "shipment_status_histories",
+      "total": 12,
+      "kept": 0,
+      "deleted": 12
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "shipments",
+      "total": 11,
+      "kept": 0,
+      "deleted": 11
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "shipments_backup",
+      "total": 1,
+      "kept": 0,
+      "deleted": 1
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "storefront_connections",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "storefront_sync_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "1. Tenant & User Management",
+      "table": "sub_users",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "subscription_plans",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "support_tickets",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "system_sequences",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "9. Other Uncategorised Tables",
+      "table": "tenant_courier_access",
+      "total": 2,
+      "kept": 0,
+      "deleted": 2
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "tenant_integration_configs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "tenant_settings",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "7. Carrier Master, Rates & Subscriptions",
+      "table": "tenant_subscriptions",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "tenant_webhooks",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "1. Tenant & User Management",
+      "table": "tenants",
+      "total": 9,
+      "kept": 0,
+      "deleted": 9
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "ticket_attachments",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "ticket_messages",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "tracking_events",
+      "total": 9,
+      "kept": 0,
+      "deleted": 9
+    },
+    {
+      "group": "1. Tenant & User Management",
+      "table": "users",
+      "total": 7,
+      "kept": 0,
+      "deleted": 7
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "wallet_recharge_transactions",
+      "total": 44,
+      "kept": 0,
+      "deleted": 44
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "wallet_transactions",
+      "total": 40,
+      "kept": 0,
+      "deleted": 40
+    },
+    {
+      "group": "2. Financial Ledger & Invoicing",
+      "table": "wallets",
+      "total": 5,
+      "kept": 0,
+      "deleted": 5
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "webhook_deliveries",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "5. Authentication, Sessions & Security",
+      "table": "webhook_logs",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "3. Operational Shipping, NDR & RTO",
+      "table": "weight_discrepancy_disputes",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    },
+    {
+      "group": "8. Communications, Support & Storefronts",
+      "table": "whatsapp_templates",
+      "total": 0,
+      "kept": 0,
+      "deleted": 0
+    }
+  ]
+}

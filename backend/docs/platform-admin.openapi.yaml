@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: Platform Admin Access Model
+  version: 1.0.0
+  description: Platform Admin isolated auth and impersonation endpoints.
+components:
+  securitySchemes:
+    platformBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Must use a Platform JWT with aud: 'platform-admin'"
+
+security:
+  - platformBearerAuth: []
+
+paths:
+  /api/v1/platform/auth/login:
+    post:
+      summary: Platform Admin Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login or 2FA required
+          
+  /api/v1/platform/auth/2fa/verify:
+    post:
+      summary: Verify 2FA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Finalized login
+          
+  /api/v1/platform/auth/logout:
+    post:
+      summary: Logout Platform Admin
+      responses:
+        '200':
+          description: Logged out
+          
+  /api/v1/platform/auth/me:
+    get:
+      summary: Get Current Platform Admin
+      responses:
+        '200':
+          description: Admin details and permissions
+          
+  /api/v1/platform/impersonate/{tenantId}:
+    post:
+      summary: Start Impersonation
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Scoped impersonation token generated
+          
+  /api/v1/platform/impersonate/{sessionId}/end:
+    post:
+      summary: End Impersonation
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Impersonation session ended

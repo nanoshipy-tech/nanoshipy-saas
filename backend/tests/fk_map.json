@@ -1,0 +1,792 @@
+{
+  "role_permissions": [
+    {
+      "to": "permissions",
+      "from": "permission_id",
+      "target": "id",
+      "on_delete": "CASCADE"
+    },
+    {
+      "to": "roles",
+      "from": "role_id",
+      "target": "id",
+      "on_delete": "CASCADE"
+    }
+  ],
+  "roles": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "users": [
+    {
+      "to": "roles",
+      "from": "role_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "refresh_tokens": [
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "audit_logs": [
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "password_reset_tokens": [
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "pickup_addresses": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "company_documents": [
+    {
+      "to": "users",
+      "from": "uploaded_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "orders": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "pickup_addresses",
+      "from": "pickup_address_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "order_items": [
+    {
+      "to": "orders",
+      "from": "order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "order_status_histories": [
+    {
+      "to": "users",
+      "from": "changed_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "orders",
+      "from": "order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "order_imports": [
+    {
+      "to": "users",
+      "from": "uploaded_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "courier_providers": [
+    {
+      "to": "platform_admins",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tenant_courier_access": [
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "provider_health_logs": [
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "shipments": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "pickup_addresses",
+      "from": "pickup_address_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "orders",
+      "from": "order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "shipment_rate_quotes": [
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "orders",
+      "from": "order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "shipment_status_histories": [
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tracking_events": [
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "webhook_logs": [
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "ndr_events": [
+    {
+      "to": "tracking_events",
+      "from": "tracking_event_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "ndr_actions": [
+    {
+      "to": "users",
+      "from": "performed_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "ndr_events",
+      "from": "ndr_event_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "rto_records": [
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "wallets": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "wallet_transactions": [
+    {
+      "to": "users",
+      "from": "performed_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "wallets",
+      "from": "wallet_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "recharge_orders": [
+    {
+      "to": "users",
+      "from": "initiated_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "wallets",
+      "from": "wallet_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "invoices": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "invoice_line_items": [
+    {
+      "to": "invoices",
+      "from": "invoice_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "credit_notes": [
+    {
+      "to": "invoices",
+      "from": "original_invoice_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tenant_subscriptions": [
+    {
+      "to": "subscription_plans",
+      "from": "pending_plan_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "subscription_plans",
+      "from": "plan_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "plan_usage_tracking": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "plan_change_history": [
+    {
+      "to": "subscription_plans",
+      "from": "new_plan_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "subscription_plans",
+      "from": "old_plan_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "notification_preferences": [
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "notification_logs": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "in_app_notifications": [
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "api_keys": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "api_key_usage_logs": [
+    {
+      "to": "api_keys",
+      "from": "api_key_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tenant_webhooks": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "webhook_deliveries": [
+    {
+      "to": "tenant_webhooks",
+      "from": "tenant_webhook_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "analytics_daily_snapshots": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "support_tickets": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "platform_admins",
+      "from": "assigned_to",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "orders",
+      "from": "related_order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "shipments",
+      "from": "related_shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "ticket_messages": [
+    {
+      "to": "support_tickets",
+      "from": "ticket_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "ticket_attachments": [
+    {
+      "to": "ticket_messages",
+      "from": "ticket_message_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "support_tickets",
+      "from": "ticket_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tenant_settings": [
+    {
+      "to": "users",
+      "from": "updated_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "platform_settings": [
+    {
+      "to": "platform_admins",
+      "from": "updated_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "kyc_documents": [
+    {
+      "to": "platform_admins",
+      "from": "reviewed_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "seller_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "whatsapp_templates": [
+    {
+      "to": "platform_admins",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "cod_remittances": [
+    {
+      "to": "tenants",
+      "from": "seller_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "weight_discrepancy_disputes": [
+    {
+      "to": "platform_admins",
+      "from": "resolved_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "seller_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "sub_users": [
+    {
+      "to": "tenants",
+      "from": "seller_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "carrier_margin_configs": [
+    {
+      "to": "platform_admins",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "seller_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "courier_providers",
+      "from": "carrier_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "wallet_recharge_transactions": [
+    {
+      "to": "payment_gateways",
+      "from": "gateway_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "users",
+      "from": "user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "address_lookup_audit_logs": [
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "SET NULL"
+    }
+  ],
+  "platform_audit_logs": [
+    {
+      "to": "tenants",
+      "from": "target_tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "platform_admins",
+      "from": "platform_admin_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "impersonation_sessions": [
+    {
+      "to": "users",
+      "from": "target_user_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "target_tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "platform_admins",
+      "from": "platform_admin_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "platform_refresh_tokens": [
+    {
+      "to": "platform_admins",
+      "from": "admin_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "tenant_integration_configs": [
+    {
+      "to": "platform_integrations",
+      "from": "platform_integration_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ],
+  "shipments_backup": [
+    {
+      "to": "users",
+      "from": "created_by",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "pickup_addresses",
+      "from": "pickup_address_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "orders",
+      "from": "order_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "tenants",
+      "from": "tenant_id",
+      "target": "id",
+      "on_delete": "CASCADE"
+    }
+  ],
+  "cost_rate_snapshots": [
+    {
+      "to": "courier_providers",
+      "from": "courier_provider_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    },
+    {
+      "to": "shipments",
+      "from": "shipment_id",
+      "target": "id",
+      "on_delete": "NO ACTION"
+    }
+  ]
+}

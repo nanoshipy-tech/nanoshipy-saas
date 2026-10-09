@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+  <rect width="160" height="50" rx="8" fill="#FFFFFF"/>
+  <g transform="translate(10, 8)">
+    <rect width="34" height="34" rx="7" fill="#00A651"/>
+    <path d="M8 24 L17 12 L26 24" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="17" cy="18" r="3" fill="#FFE500"/>
+  </g>
+  <text x="52" y="28" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="15" fill="#0A2540">Smartr<tspan fill="#00A651">Logistics</tspan></text>
+  <text x="53" y="38" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="7.5" letter-spacing="1.2" fill="#7E7994">EXPRESS CARGO</text>
+</svg>

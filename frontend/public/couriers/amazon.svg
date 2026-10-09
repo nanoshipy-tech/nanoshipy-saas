@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <g transform="translate(8, 6)">
+    <text x="4" y="24" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="20" fill="#131A22">amazon</text>
+    <path d="M6 29 Q29 39 54 28" stroke="#FF9900" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <polygon points="53,25 58,28 52,30" fill="#FF9900"/>
+    <text x="70" y="24" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="11" letter-spacing="1.5" fill="#767676">SHIPPING</text>
+  </g>
+</svg>

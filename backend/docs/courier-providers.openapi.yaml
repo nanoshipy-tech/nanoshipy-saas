@@ -1,0 +1,383 @@
+openapi: 3.0.0
+info:
+  title: ShippingSaaS Courier Providers API
+  version: 1.0.0
+  description: Platform Admin and Tenant-facing endpoints for Managing Courier Providers and Adapter Access.
+servers:
+  - url: https://api.yourdomain.com/api/v1
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+        error:
+          type: object
+          nullable: true
+          example: null
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        data:
+          type: object
+          nullable: true
+          example: null
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            fields:
+              type: object
+              additionalProperties:
+                type: string
+paths:
+  /platform/couriers:
+    get:
+      summary: List all courier providers (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: is_active
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: provider_key
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of courier providers retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    post:
+      summary: Onboard a new courier provider (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - provider_key
+                - display_name
+                - credentials
+                - service_types
+              properties:
+                provider_key:
+                  type: string
+                  example: mock
+                display_name:
+                  type: string
+                  example: Mock Courier (Test)
+                logo_url:
+                  type: string
+                  nullable: true
+                credentials:
+                  type: object
+                  example:
+                    api_key: test-key-123
+                    api_secret: test-secret
+                config:
+                  type: object
+                  example:
+                    base_url: https://mock.internal
+                    timeout_ms: 5000
+                supports_cod:
+                  type: boolean
+                  default: true
+                supports_prepaid:
+                  type: boolean
+                  default: true
+                max_weight_kg:
+                  type: number
+                  nullable: true
+                  example: 30
+                service_types:
+                  type: array
+                  items:
+                    type: string
+                    enum: [surface, air, express]
+                  example: [surface, express]
+                priority:
+                  type: integer
+                  default: 0
+      responses:
+        '201':
+          description: Provider onboarded successfully. Credentials are masked in response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}:
+    get:
+      summary: Get courier provider details (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Provider details retrieved successfully. Credentials are masked.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    put:
+      summary: Update courier provider configuration or credentials (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                logo_url:
+                  type: string
+                credentials:
+                  type: object
+                config:
+                  type: object
+                supports_cod:
+                  type: boolean
+                supports_prepaid:
+                  type: boolean
+                max_weight_kg:
+                  type: number
+                service_types:
+                  type: array
+                  items:
+                    type: string
+                priority:
+                  type: integer
+      responses:
+        '200':
+          description: Provider updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}/toggle:
+    put:
+      summary: Enable or disable a courier provider globally (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - is_active
+              properties:
+                is_active:
+                  type: boolean
+      responses:
+        '200':
+          description: Provider status toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}/health-check:
+    post:
+      summary: Trigger manual provider health check (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Health check executed and logged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}/health-logs:
+    get:
+      summary: Get health check log history (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Health check logs list retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}/tenant-access:
+    post:
+      summary: Grant a tenant access to a courier provider (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tenant_id
+              properties:
+                tenant_id:
+                  type: string
+                  format: uuid
+      responses:
+        '201':
+          description: Tenant access granted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /platform/couriers/{id}/tenant-access/{tenantId}:
+    delete:
+      summary: Revoke tenant access to a courier provider (Platform Admin)
+      tags:
+        - Platform Admin
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Tenant access revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /couriers:
+    get:
+      summary: List all active courier providers available to the current tenant (Tenant)
+      tags:
+        - Tenant Portal
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of available couriers retrieved. Credentials never exposed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'

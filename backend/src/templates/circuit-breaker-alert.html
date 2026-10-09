@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: sans-serif; line-height: 1.5; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #f5c6cb; border-radius: 5px; background-color: #f8d7da; }
+    .title { color: #721c24; margin-top: 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="title">⚠️ Circuit Breaker Opened Alert</h2>
+    <p>Hi Admin,</p>
+    <p>This is to notify you that the circuit breaker for <strong>{{ providerName }} ({{ providerKey }})</strong> has been <strong>OPENED</strong> due to repeated failures.</p>
+    <p><strong>Details:</strong></p>
+    <ul>
+      <li><strong>Provider ID:</strong> {{ providerId }}</li>
+      <li><strong>Consecutive Failures:</strong> {{ consecutiveFailures }}</li>
+      <li><strong>Time Opened:</strong> {{ openedAt }}</li>
+    </ul>
+    <p>The provider has been temporarily disabled and any requests will fail-fast without attempting the remote API calls.</p>
+    <p>You can review status and manually reset the circuit breaker via the platform admin panel.</p>
+    <p>Thanks,<br>The ShippingSaaS System</p>
+  </div>
+</body>
+</html>

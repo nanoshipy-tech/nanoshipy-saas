@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <!-- Shadowfax Pegasus Icon -->
+  <g transform="translate(6, 6)">
+    <rect width="36" height="36" rx="8" fill="#FF5000"/>
+    <path d="M8 26 Q18 13 28 13 Q21 19 25 24 Q17 23 13 28 Z" fill="white"/>
+    <path d="M13 18 Q21 9 29 9 Q23 15 25 19" stroke="#FFE000" stroke-width="1.5" fill="none"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="50" y="30" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="17" fill="#1E202B">shadow<tspan fill="#FF5000">fax</tspan></text>
+</svg>

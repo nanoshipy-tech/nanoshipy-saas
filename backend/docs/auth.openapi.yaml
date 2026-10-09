@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  title: ShippingSaaS Auth API
+  version: 1.0.0
+  description: Authentication and Authorization endpoints for the Shipping Aggregator SaaS.
+servers:
+  - url: https://api.yourdomain.com/api/v1
+    description: Local development server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+        error:
+          type: object
+          nullable: true
+          example: null
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        data:
+          type: object
+          nullable: true
+          example: null
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            fields:
+              type: object
+              additionalProperties:
+                type: string
+paths:
+  /auth/register:
+    post:
+      summary: Register a new tenant and owner user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - company_name
+                - subdomain
+                - name
+                - email
+                - password
+              properties:
+                company_name:
+                  type: string
+                subdomain:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '201':
+          description: Created
+  /auth/verify-email:
+    post:
+      summary: Verify user email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - subdomain
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                subdomain:
+                  type: string
+      responses:
+        '200':
+          description: Success (returns tokens or 2FA requirement)
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /auth/logout:
+    post:
+      summary: Logout user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+  /auth/forgot-password:
+    post:
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                subdomain:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /auth/reset-password:
+    post:
+      summary: Reset password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                new_password:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /auth/me:
+    get:
+      summary: Get current user info
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+  /auth/2fa/verify:
+    post:
+      summary: Verify 2FA OTP at login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                temp_token:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /auth/2fa/enable:
+    post:
+      summary: Initiate 2FA setup
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+  /auth/2fa/confirm:
+    post:
+      summary: Confirm 2FA setup with OTP
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp:
+                  type: string
+      responses:
+        '200':
+          description: OK

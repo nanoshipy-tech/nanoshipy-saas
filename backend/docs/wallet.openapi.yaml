@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: Wallet & Recharge API Specification
+  description: |
+    Endpoints for tenant wallet balance management, Razorpay payment gateway integration, 
+    low balance configuration, ledger transaction logging, and platform administration.
+
+    ### Razorpay Webhook Signature Verification Algorithm:
+    1. Retrieve the signature from the `X-Razorpay-Signature` request header.
+    2. Extract the raw text body payload.
+    3. Generate the HMAC-SHA256 digest of the raw body payload using your configured `RAZORPAY_WEBHOOK_SECRET` key.
+    4. Compare the hexadecimal output against the header signature. Mismatches must be rejected with 422 Unprocessable Entity.
+  version: 1.0.0
+paths:
+  /api/v1/wallet:
+    get:
+      summary: Get Wallet Details
+      description: Retrieve the tenant's current cached wallet balance and configurations.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Wallet details fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      tenant_id:
+                        type: string
+                        format: uuid
+                      balance:
+                        type: number
+                        example: 4500.00
+                      low_balance_threshold:
+                        type: number
+                        example: 500.00
+                      currency:
+                        type: string
+                        example: INR
+                  error:
+                    type: "null"
+        '401':
+          description: Unauthorized session
+
+  /api/v1/wallet/threshold:
+    put:
+      summary: Update Low-Balance Alert Threshold
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - low_balance_threshold
+              properties:
+                low_balance_threshold:
+                  type: number
+                  example: 1000.00
+      responses:
+        '200':
+          description: Low-balance alert threshold updated successfully
+
+  /api/v1/wallet/transactions:
+    get:
+      summary: Get Ledger History
+      description: Retrieve paginated list of transaction records (credits and debits).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [credit, debit]
+        - name: reference_type
+          in: query
+          schema:
+            type: string
+            enum: [recharge, shipment_debit, shipment_refund, manual_credit, manual_debit, adjustment]
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: created_at
+        - name: order
+          in: query
+          schema:
+            type: string
+            default: DESC
+      responses:
+        '200':
+          description: Ledger transactions returned successfully
+
+  /api/v1/wallet/recharge:
+    post:
+      summary: Initiate Payment Order
+      description: Trigger Razorpay order creation for a specified recharge amount.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+              properties:
+                amount:
+                  type: number
+                  minimum: 100
+                  maximum: 500000
+                  example: 5000.00
+      responses:
+        '201':
+          description: Recharge order initialized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      recharge_order_id:
+                        type: string
+                        format: uuid
+                      gateway_order_id:
+                        type: string
+                        example: order_Razorpay123
+                      amount:
+                        type: number
+                        example: 5000.00
+                      currency:
+                        type: string
+                        example: INR
+                      razorpay_key_id:
+                        type: string
+                        example: rzp_test_xxxx
+
+  /api/v1/wallet/recharge/verify:
+    post:
+      summary: Verify Payment Signature
+      description: Confirms client-side Razorpay signatures before crediting balance.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - recharge_order_id
+                - gateway_payment_id
+                - gateway_signature
+              properties:
+                recharge_order_id:
+                  type: string
+                  format: uuid
+                gateway_payment_id:
+                  type: string
+                  example: pay_xyz123
+                gateway_signature:
+                  type: string
+                  example: sig_abc789
+      responses:
+        '200':
+          description: Payment verified and credited successfully
+        '422':
+          description: Invalid payment signature validation failed
+
+  /api/v1/webhooks/razorpay:
+    post:
+      summary: Razorpay Public Server Webhook
+      description: Receives asynchronouscaptured payment webhook logs from Razorpay.
+      parameters:
+        - name: X-Razorpay-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook received successfully (processed or ignored as duplicate)
+        '422':
+          description: Invalid signature signature
+
+  /api/v1/platform/tenants/{tenantId}/wallet:
+    get:
+      summary: Platform View Tenant Wallet
+      description: Allows a platform admin with admin.manage privilege to audit a tenant's wallet details.
+      security:
+        - PlatformAdminAuth: []
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Wallet record returned successfully
+
+  /api/v1/platform/tenants/{tenantId}/wallet/credit:
+    post:
+      summary: Platform Manual Credit
+      description: Allows platform administrators to manually credit a tenant's wallet for offline recharges.
+      security:
+        - PlatformAdminAuth: []
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - description
+              properties:
+                amount:
+                  type: number
+                  example: 10000.00
+                description:
+                  type: string
+                  minLength: 10
+                  example: Bank transfer received - Ref #4521
+      responses:
+        '200':
+          description: Wallet credited successfully

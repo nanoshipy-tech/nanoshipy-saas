@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+  <rect width="160" height="50" rx="8" fill="#FFFFFF"/>
+  <!-- Shipway Icon -->
+  <g transform="translate(10, 8)">
+    <rect width="34" height="34" rx="7" fill="#5B2D8E"/>
+    <path d="M7 22 L17 10 L27 22" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M11 24 L17 17 L23 24" stroke="#D6A8FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="13" y="24" width="8" height="6" rx="1" fill="white"/>
+  </g>
+  <text x="52" y="28" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="16" fill="#5B2D8E">shipway</text>
+  <text x="53" y="38" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="7.5" letter-spacing="1" fill="#7E7994">AGGREGATOR</text>
+</svg>

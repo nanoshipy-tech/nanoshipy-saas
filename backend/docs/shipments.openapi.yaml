@@ -1,0 +1,292 @@
+openapi: 3.0.3
+info:
+  title: Shipping SaaS Platform - Shipment Creation & Rate Comparison API
+  version: 1.0.0
+  description: API endpoints for comparing shipping rates across couriers, booking shipments, and managing tracking lifecycles.
+paths:
+  /orders/{orderId}/rates:
+    post:
+      summary: Fetch live rates comparison
+      description: Query all tenant-enabled, active, and healthy carriers in parallel and return quotes sorted by price.
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of available rates and estimated days
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      order_id:
+                        type: string
+                        format: uuid
+                      rates:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            courier_provider_id:
+                              type: string
+                              format: uuid
+                            display_name:
+                              type: string
+                              example: Mock Courier (Test)
+                            service_type:
+                              type: string
+                              example: express
+                            price:
+                              type: number
+                              example: 89.50
+                            cod_charge:
+                              type: number
+                              example: 15.00
+                            estimated_days:
+                              type: integer
+                              example: 2
+                      quote_expires_at:
+                        type: string
+                        format: date-time
+                        example: '2026-07-09T13:15:00Z'
+                      unavailable_providers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            display_name:
+                              type: string
+                              example: SlowCourier
+                            reason:
+                              type: string
+                              example: SERVICE_UNAVAILABLE
+                  error:
+                    type: "null"
+        '409':
+          description: Order is not ready to ship
+  /shipments:
+    post:
+      summary: Create shipment from order
+      description: Book shipment with selected provider rate, generate AWB number, re-host label PDF, and transition order to shipped status.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - order_id
+                - courier_provider_id
+                - service_type
+                - quoted_rate
+              properties:
+                order_id:
+                  type: string
+                  format: uuid
+                courier_provider_id:
+                  type: string
+                  format: uuid
+                service_type:
+                  type: string
+                  enum: [surface, air, express]
+                quoted_rate:
+                  type: number
+                  format: float
+                  example: 89.50
+      responses:
+        '201':
+          description: Shipment successfully booked and AWB generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      awb_number:
+                        type: string
+                        example: MOCK-1720512345-8841
+                      status:
+                        type: string
+                        example: awb_generated
+                      label_url:
+                        type: string
+                        example: https://local-storage/uploads/shipments/labels/label-uuid.pdf
+                      estimated_delivery_date:
+                        type: string
+                        format: date
+                        example: '2026-07-11'
+                  error:
+                    type: "null"
+        '422':
+          description: Rate quote has expired or price tampered
+    get:
+      summary: List shipments
+      description: Retrieve list of shipments with search, filtering, and pagination.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: courier_provider_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: awb_number
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            default: created_at
+        - name: order
+          in: query
+          required: false
+          schema:
+            type: string
+            default: DESC
+      responses:
+        '200':
+          description: Paginated list of shipments
+  /shipments/summary:
+    get:
+      summary: Get dashboard summary counts
+      description: Returns counts of shipments grouped by their tracking status.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Counts mapping
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      awb_generated:
+                        type: integer
+                        example: 8
+                      in_transit:
+                        type: integer
+                        example: 22
+                      delivered:
+                        type: integer
+                        example: 140
+                      cancelled:
+                        type: integer
+                        example: 3
+  /shipments/{id}:
+    get:
+      summary: Get shipment detail
+      description: Retrieve a single shipment details including status timeline history.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Detailed shipment information
+  /shipments/{id}/cancel:
+    put:
+      summary: Cancel shipment
+      description: Cancel a shipment (pre-pickup only), call provider adapter cancel API, and revert order back to ready_to_ship status.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Shipment successfully cancelled and order reverted
+        '409':
+          description: Shipment has already been picked up or delivered
+  /shipments/{id}/label:
+    get:
+      summary: Get label URL
+      description: Retrieves the PDF label URL for printing.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Object containing label_url
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

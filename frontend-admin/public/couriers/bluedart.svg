@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <rect width="160" height="48" rx="8" fill="#FFCC00"/>
+  <g transform="translate(8, 8)">
+    <text x="2" y="19" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-style="italic" font-size="16" letter-spacing="0.5" fill="#002D72">BLUE DART</text>
+    <!-- Speed chevrons -->
+    <path d="M98 7 L140 7 L132 15 L90 15 Z" fill="#D40511"/>
+    <path d="M86 19 L128 19 L120 27 L78 27 Z" fill="#D40511"/>
+    <!-- DHL logo pill -->
+    <rect x="2" y="23" width="38" height="10" rx="2" fill="#D40511"/>
+    <text x="8" y="31" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="8" fill="#FFCC00">DHL</text>
+  </g>
+</svg>

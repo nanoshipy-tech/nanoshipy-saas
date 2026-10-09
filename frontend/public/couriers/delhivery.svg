@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" fill="none">
+  <!-- Delhivery Red Box Icon -->
+  <g transform="translate(6, 6)">
+    <rect width="36" height="36" rx="8" fill="#E21818"/>
+    <path d="M11 11 H20.5 C24.5 11 27 13.5 27 17.5 C27 20.2 25.2 22.3 23 23.1 C25.8 23.9 27.5 26.2 27.5 29.5 C27.5 33.5 24.5 35.5 20.5 35.5 H11 V11 Z" fill="white"/>
+    <rect x="15" y="15" width="6.5" height="5.5" rx="1.5" fill="#E21818"/>
+    <rect x="15" y="25" width="7.5" height="5.5" rx="1.5" fill="#E21818"/>
+  </g>
+  <!-- Delhivery Wordmark -->
+  <text x="50" y="30" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="18" letter-spacing="1.2" fill="#1C1B1F">DELHIVERY</text>
+</svg>

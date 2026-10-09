@@ -1,0 +1,25 @@
+'use strict';
+
+const { Client } = require('ssh2');
+const fs = require('fs');
+
+const conn = new Client();
+conn.on('ready', () => {
+  const sql = "SELECT setting_key, setting_value FROM platform_settings WHERE setting_key LIKE 'smtp%';"
+  const cmd = `sudo -u postgres psql -d nanoshipy_db -c "${sql}"`;
+  conn.exec(cmd, (err, stream) => {
+    if (err) throw err;
+    stream.on('data', d => process.stdout.write(d.toString()));
+    stream.stderr.on('data', d => process.stderr.write(d.toString()));
+    stream.on('close', () => {
+      conn.end();
+    });
+  });
+});
+
+conn.connect({
+  host: '34.93.11.164',
+  port: 22,
+  username: 'care',
+  privateKey: fs.readFileSync('C:/Users/dines/.ssh/id_rsa'),
+});
